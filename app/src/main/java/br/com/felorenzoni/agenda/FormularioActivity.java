@@ -7,6 +7,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import br.com.felorenzoni.agenda.dao.AlunoDAO;
 import br.com.felorenzoni.agenda.modelo.Aluno;
 
 
@@ -37,11 +38,16 @@ public class FormularioActivity extends AppCompatActivity {
 
         switch (item.getItemId()){
             case R.id.menu_formulario_ok:
-//                Toast.makeText(FormularioActivity.this, "aluno Salvo com Sucesso", Toast.LENGTH_SHORT).show();
+
                 Aluno aluno = helper.PegaAluno();
 
                 Toast.makeText(this, "Aluno " + aluno.getNome() + " salvo com Sucesso!"
                         , Toast.LENGTH_SHORT).show();
+
+                AlunoDAO dao = new AlunoDAO(this);
+                dao.insere(aluno);
+                dao.close();
+
                 finish();
                 break;
         }
