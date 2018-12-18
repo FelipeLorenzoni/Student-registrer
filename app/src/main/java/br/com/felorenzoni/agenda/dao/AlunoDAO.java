@@ -2,9 +2,14 @@ package br.com.felorenzoni.agenda.dao;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import br.com.felorenzoni.agenda.ListaAlunoActivity;
 import br.com.felorenzoni.agenda.modelo.Aluno;
 
 public class AlunoDAO extends SQLiteOpenHelper{
@@ -46,4 +51,25 @@ public class AlunoDAO extends SQLiteOpenHelper{
 
     }
 
+    public List<Aluno> buscaAlunos(ListaAlunoActivity listaAlunoActivity) {
+
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor c = db.rawQuery("SELECT * FROM Alunos;",null);
+        List<Aluno> alunos = new ArrayList<>();
+        while (c.moveToNext()){
+            Aluno aluno = new Aluno();
+
+            aluno.setId(c.getLong(c.getColumnIndex("id")));
+            aluno.setNome(c.getString(c.getColumnIndex("nome")));
+            aluno.setEndereco(c.getString(c.getColumnIndex("endereco")));
+            aluno.setSite(c.getString(c.getColumnIndex("site")));
+            aluno.setNota(c.getDouble(c.getColumnIndex("nota")));
+
+            alunos.add(aluno);
+        }
+        c.close();
+        return alunos;
+
+
+    }
 }
