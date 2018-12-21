@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -18,13 +19,13 @@ import br.com.felorenzoni.agenda.modelo.Aluno;
 
 public class ListaAlunoActivity extends AppCompatActivity {
 
-    private View listaAlunos;
+    private ListView listaAlunos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.menu_lista_aluno);
-        listaAlunos = findViewById(R.id.lista_alunos);
+        listaAlunos = (ListView) findViewById(R.id.lista_alunos);
         Button novoAluno = findViewById(R.id.novo_aluno);
 
         novoAluno.setOnClickListener(new View.OnClickListener() {
@@ -33,6 +34,16 @@ public class ListaAlunoActivity extends AppCompatActivity {
                 Intent intent = new Intent(ListaAlunoActivity.this, FormularioActivity.class);
                 startActivity(intent);
             }
+        });
+
+
+        listaAlunos.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+            @Override
+            public void onItemClick(AdapterView<?> lista, View item, int position, long id){
+                Aluno aluno = (Aluno) lista.getItemAtPosition(position);
+                Toast.makeText(ListaAlunoActivity.this, "Aluno selecionado: " + aluno.getNome(), Toast.LENGTH_SHORT).show();
+            }
+
         });
 
         registerForContextMenu(listaAlunos);
@@ -56,15 +67,37 @@ public class ListaAlunoActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+    public void onCreateContextMenu(ContextMenu menu, View v, final ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
 
         MenuItem deletar = menu.add("Deletar");
+
+        MenuItem editar = menu.add("Editar");
+
+
+        editar.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+
+                Toast.makeText(ListaAlunoActivity.this,"Editar",Toast.LENGTH_SHORT ).show();
+
+                return false;
+            }
+        });
         deletar.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
-                Toast.makeText(ListaAlunoActivity.this,"Clicou em deletar",Toast.LENGTH_SHORT).show();
-                return true;
+
+                AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
+
+                Aluno aluno = (Aluno) listaAlunos.getItemAtPosition(info.position);
+
+                AlunoDAO dao = new AlunoDAO(ListaAlunoActivity.this );
+                dao.deleta(aluno);
+                dao.close();
+
+                carregaLista();
+                return false;
             }
         });
 
