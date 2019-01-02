@@ -27,10 +27,7 @@ public class FormularioActivity extends AppCompatActivity {
         if (aluno != null){
             helper.PreencheFormulario(aluno);
         }
-
     }
-
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -44,13 +41,11 @@ public class FormularioActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-
         switch (item.getItemId()){
             case R.id.menu_formulario_ok:
 
                 Aluno aluno = helper.PegaAluno();
                 AlunoDAO dao = new AlunoDAO(this);
-
 
                 if(aluno.getId() != null){
                     dao.altera(aluno);
